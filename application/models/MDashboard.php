@@ -16,10 +16,9 @@ class MDashboard extends CI_Model
 		return $query->result();
 	}
 
-	function updateSelesai($where, $data){
+	function updateSelesai($where){
 		$this->db->set('statusService','Selesai');
 		$this->db->set('tanggalSelesai',date('Y-m-d'));
-		$this->db->set($data);
 		$this->db->where($where);
 		$query = $this->db->update('service');
 
@@ -34,6 +33,34 @@ class MDashboard extends CI_Model
 		$query = $this->db->query("UPDATE service SET kerusakan='$data1', statusService='$data2', biaya='$data3' WHERE idService='$where'");
 		return $query;
 	}
+	
+	function smsgateway($phone,$pesan){
+		$ch = curl_init('https://semysms.net/api/3/sms.php');
+	$post = array(
+    
+  'phone' => '+62'.$phone,
+  'msg' => $pesan,
+ 'device' => 102071,  //  Device code
+ 'token' => '4ab1b3e2cf37771a686cf4ce8ef97264'
+);
+
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+return $response;
+	}
+    	function get_data_idpelanggan($ID){
+		$query = $this->db->query("SELECT * FROM pelanggan WHERE idPelanggan = '$ID'");
+		return $query->result_array();
+	}
+        	function get_data_keluhan($AMBIL_ID){
+		$query = $this->db->query("SELECT * FROM service WHERE idService = '$AMBIL_ID'");
+		return $query->result_array();
+	}
+    	
 
 
 	function tampilMenKod($where){
@@ -56,6 +83,8 @@ class MDashboard extends CI_Model
 		}
 
 	}
+	
+	
 
 }
 ?>

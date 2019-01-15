@@ -161,7 +161,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 						<li class="dropdown profile_details_drop">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 								<div class="profile_img">	
-									<span class="prfil-img"><img src="<?php echo base_url()?>admassets/images/2.jpg" alt=""> </span> 
+									<span class="prfil-img"><i class="fa fa-user lnr" style="top: 34%; right: 100%;"></i></span> 
 									<div class="user-name">
 										<p><?php
 										echo $this->session->userdata('user');

@@ -35,6 +35,7 @@ class Daftar_Servis extends CI_Controller
 
 	public function daftar()
 	{
+        $date=date('Y-m-d');
 		$daftar = array(
 				'kategoriBarang' => $this->input->post('kategori'),
 				'modelBarang' => $this->input->post('model'),
@@ -43,9 +44,14 @@ class Daftar_Servis extends CI_Controller
 				'estimasiHarga' => $this->input->post('perkiraan'),
 				'Pelanggan_idPelanggan' => '',
 				'Admin_idAdmin' => $this->session->userdata('id'),
-				'tanggalMasuk' => date('Y-m-d'),
+				'tanggalMasuk' => $date,
 				'statusService' => 'Belum'
 			);
+
+		$AMBIL_NAMA = $this->input->post('nama');
+        $phone = $this->input->post('noTelp');
+        $AMBIL_modelBarang_SERVICE = $this->input->post('model');
+        $AMBIL_keluhan_SERVICE = $this->input->post('keluhan');
 
 
 		$where = array(
@@ -65,6 +71,16 @@ class Daftar_Servis extends CI_Controller
 
 				if ($querySer == TRUE) {
 					$this->session->set_flashdata('errors','<div class="alert alert-success">Data servis berhasil disimpan</div>');
+
+					$CEK_DATA_PELANGGAN=$this->MDaftar_Servis->get_data_idpelanggan($AMBIL_NAMA,$phone);
+            		$cekidpelanggan=$CEK_DATA_PELANGGAN[0]['idPelanggan'];
+            		$CEK_DATA_KELUHAN=$this->MDaftar_Servis->get_data_keluhan($cekidpelanggan,$date);
+					$AMBIL_ID_SERVICE=$CEK_DATA_KELUHAN[0]['idService'];
+            
+			
+    				$pesan= "HY ".$AMBIL_NAMA." BARANG DENGAN NAMA ".$AMBIL_modelBarang_SERVICE." DENGAN KELUHAN ".$AMBIL_keluhan_SERVICE." SUDAH MASUK DALAM ANTRINAN. ID SERVICE : ".$AMBIL_ID_SERVICE;
+					$kirimsms=$this->MDaftar_Servis->smsgateway($phone,$pesan);
+					
 					redirect('Daftar_Servis');
 				}else{
 					$this->session->set_flashdata('errors','<div class="alert alert-warning">Data servis tidak tersimpan bro</div>');
@@ -84,7 +100,18 @@ class Daftar_Servis extends CI_Controller
 				$querySer = $this->MDaftar_Servis->simpanDataServis($daftar);
 
 				if ($querySer == TRUE) {
-					$this->session->set_flashdata('errors','<div class="alert alert-success">Data serrvis berhasil disimpan</div>');
+					$this->session->set_flashdata('errors','<div class="alert alert-success">Data servis berhasil disimpan</div>');
+            
+			$CEK_DATA_PELANGGAN=$this->MDaftar_Servis->get_data_idpelanggan($AMBIL_NAMA,$phone);
+            $cekidpelanggan=$CEK_DATA_PELANGGAN[0]['idPelanggan'];
+            $CEK_DATA_KELUHAN=$this->MDaftar_Servis->get_data_keluhan($cekidpelanggan,$date);
+			$AMBIL_ID_SERVICE=$CEK_DATA_KELUHAN[0]['idService'];
+            
+			
+    		$pesan= "HY ".$AMBIL_NAMA." BARANG DENGAN NAMA ".$AMBIL_modelBarang_SERVICE." DENGAN KELUHAN ".$AMBIL_keluhan_SERVICE." SUDAH MASUK DALAM ANTRINAN. ID SERVICE : ".$AMBIL_ID_SERVICE;
+			$kirimsms=$this->MDaftar_Servis->smsgateway($phone,$pesan);
+
+                   // var_export($AMBIL_ID_SERVICE);
 					redirect('Daftar_Servis');
 				}else{
 					$this->session->set_flashdata('errors','<div class="alert alert-warning">Data servis tidak tersimpan bro</div>');
@@ -96,5 +123,6 @@ class Daftar_Servis extends CI_Controller
 			}
 
 		}
+           
 	}
 }

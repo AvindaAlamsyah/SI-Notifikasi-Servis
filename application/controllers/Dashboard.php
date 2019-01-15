@@ -43,11 +43,22 @@ class Dashboard extends CI_Controller
 		$where = array(
 				'idService' => $this->input->post('id')
 			);
-		$data = array(
-				'biaya' => $this->input->post('biaya')
-			);
 
-		$query = $this->MDashboard->updateSelesai($where, $data);
+		$query = $this->MDashboard->updateSelesai($where);
+
+		$CEK_DATA_KELUHAN=$this->MDashboard->get_data_keluhan($where['idService']);
+		$cekidpelanggan=$CEK_DATA_KELUHAN[0]['Pelanggan_idPelanggan'];
+		$cekbiaya=$CEK_DATA_KELUHAN[0]['biaya'];
+		$cekkerusakan=$CEK_DATA_KELUHAN[0]['kerusakan'];
+		$CEK_DATA_PELANGGAN=$this->MDashboard->get_data_idpelanggan($cekidpelanggan);
+		//$AMBIL_NAMA=$this->$CEK_DATA_PELANGGAN[0]['namaPelanggan'];;
+        $phone= $CEK_DATA_PELANGGAN[0]['noTelp'];;
+		//$AMBIL_ID_SERVICE=$CEK_DATA_KELUHAN[0]['idService'];
+        $AMBIL_modelBarang_SERVICE=$CEK_DATA_KELUHAN[0]['modelBarang'];
+        //$AMBIL_keluhan_SERVICE=$this->input->post('keluhan');
+			
+    		$pesan= " BARANG DENGAN NAMA ".$AMBIL_modelBarang_SERVICE." DENGAN KERUSAKAN ".$cekkerusakan." Selesai Dikerjakan. DAN BIAYA YANG HARUS DIBAYAR ".$cekbiaya;
+			$kirimsms=$this->MDashboard->smsgateway($phone,$pesan);
 
 		echo json_encode($query);
 	}
@@ -69,8 +80,26 @@ class Dashboard extends CI_Controller
 		$biaya = $this->input->post('biaya');
 
 		$query = $this->MDashboard->updateData($id, $kerusakan, $status, $biaya);
+		
+		$CEK_DATA_KELUHAN=$this->MDashboard->get_data_keluhan($id);
+		$cekidpelanggan=$CEK_DATA_KELUHAN[0]['Pelanggan_idPelanggan'];
+		$CEK_DATA_PELANGGAN=$this->MDashboard->get_data_idpelanggan($cekidpelanggan);
+		//$AMBIL_NAMA=$this->$CEK_DATA_PELANGGAN[0]['namaPelanggan'];;
+        $phone= $CEK_DATA_PELANGGAN[0]['noTelp'];
+        $cekstatus=$CEK_DATA_KELUHAN[0]['statusService'];
+		//$AMBIL_ID_SERVICE=$CEK_DATA_KELUHAN[0]['idService'];
+        $AMBIL_modelBarang_SERVICE=$CEK_DATA_KELUHAN[0]['modelBarang'];
+        //$AMBIL_keluhan_SERVICE=$this->input->post('keluhan');
+			
+    		$pesan= " BARANG DENGAN NAMA ".$AMBIL_modelBarang_SERVICE." DENGAN KERUSAKAN ".$kerusakan." DENGAN STATUS : ".$cekstatus.". ID SERVICE : ".$id." DAN BIAYA YANG HARUS DIBAYAR ".$biaya;
+			$kirimsms=$this->MDashboard->smsgateway($phone,$pesan);
+		
 
+//var_export($kirimsms);
 		echo json_encode($query);
+		//redirect('Dashboard');
+		        
+     
 	}
 }
 ?>

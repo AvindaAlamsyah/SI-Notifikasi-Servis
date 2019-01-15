@@ -161,8 +161,8 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 					<ul>
 						<li class="dropdown profile_details_drop">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-								<div class="profile_img">	
-									<span class="prfil-img"><img src="<?php echo base_url()?>admassets/images/2.jpg" alt=""> </span> 
+								<div class="profile_img">
+                                    <span class="prfil-img"><i class="fa fa-user lnr" style="top: 34%; right: 100%;"></i></span>
 									<div class="user-name">
 										<p><?php
 										echo $this->session->userdata('user');
@@ -278,7 +278,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
         			</div>
         			<form class="form-horizontal">
         				<div class="modal-body">
-                            <div class="form-group alert alert-warning"">
+                            <div class="form-group alert alert-warning">
                                 <label class="control-label col-xs-3" >Biaya Servis</label>
                                 <div class="col-xs-9">
                                 <input name="biaya" id="idbiaya" class="form-control" type="text" style="width:335px;" readonly="readonly">
@@ -476,16 +476,19 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
         //update data barang dengan status selesai
         $('#btn_selesai').on('click',function(){
         	var id = $('#idServ').val();
-            var biaya = $('#idbiaya').val();
         	$.ajax({
         		type : "POST",
         		url : "<?php echo base_url('Dashboard/selesai'); ?>",
         		dataType : "JSON",
-        		data : {id: id, biaya: biaya},
+        		data : {id: id},
         		success : function(query){
         			$('#ModalSelesai').modal('hide');
         			dataServis();
-        		}
+        		},
+                error(query){
+                    $('#ModalSelesai').modal('hide');
+                    alert('Gagal Update');
+                }
         	});
         	return false;
         });
